@@ -1,23 +1,23 @@
 import com.google.gson.Gson;
 
 import java.time.LocalDate;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.Queue;
+import java.util.concurrent.*;
 
 public class CrptApi {
     TimeUnit timeUnit;
+    int timeCount;
     int requestLimit;
-    BlockingQueue<Request> bq = new LinkedBlockingQueue<>();
-    public CrptApi(TimeUnit timeUnit, int requestLimit){
+    Queue<Request> q = new ConcurrentLinkedQueue<>();
+    public CrptApi(int timeCount, TimeUnit timeUnit, int requestLimit){
+        this.timeCount=timeCount;
         this.timeUnit = timeUnit;
         this.requestLimit = requestLimit;
     }
     public void createDocument(Document document, String signature){
         Gson gson = new Gson();
         Request request = new Request("MANUAL", gson.toJson(document), signature, "LP_INTRODUCE_GOODS");
-        bq.add(request);
+        q.add(request);
     }
 }
 
